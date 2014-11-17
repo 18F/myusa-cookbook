@@ -13,10 +13,12 @@ Rails.application.configure do
   config.log_formatter = ::Logger::Formatter.new
   config.active_record.dump_schema_after_migration = false
 
+  <% unless @elasticache_endpoint.nil? || @elasticache_endpoint == '' %>
   endpoint    = '<%= @elasticache_endpoint %>:11211'
   elasticache = Dalli::ElastiCache.new(endpoint)
-
   config.cache_store = :dalli_store, elasticache.servers, {:expires_in => 1.day, :compress => true}
+  <% end %>
+
 
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.default_url_options = { host: '<%= @app_url %>' }
