@@ -16,6 +16,7 @@ shared_files = {
   "config/memcached.yml" => "config/memcached.yml",
   "config/newrelic.yml" => "config/newrelic.yml",
   "config/secrets.yml" => "config/secrets.yml",
+  "config/environment.yml" => "config/environment.yml",
   "config/#{node['myusa']['rails_env']}.rb" => "config/environments/#{node['myusa']['rails_env']}.rb"
 }
 
@@ -40,7 +41,7 @@ deploy_branch deploy_to_dir do
       directory "#{deploy_to_dir}/shared/#{dir}" do
         owner node['myusa']['user']['username']
         group node['myusa']['user']['group']
-        mode  00755
+        mode 00755
         recursive true
       end
     end
@@ -67,8 +68,17 @@ template "#{deploy_to_dir}/shared/config/database.yml" do
 end
 
 # set up environment.rb file
-template "#{deploy_to_dir}/shared/config/#{node['myusa']['rails_env']}.rb" do
-  source "environment.rb.erb"
+file "#{deploy_to_dir}/shared/config/#{node['myusa']['rails_env']}.rb" do
+  owner node['myusa']['user']['username']
+  group node['myusa']['user']['group']
+  mode 0755
+  content ::File.open("#{deploy_to_dir}/current/config/environments/environment.rb").read
+  action :create
+end
+
+# and environment config
+template "#{deploy_to_dir}/shared/config/en.yml" do
+  source "environment.yml.erb"
   variables(
     app_url: node['myusa']['app_url'],
     elasticache_endpoint: node['myusa']['elasticache']['endpoint']
