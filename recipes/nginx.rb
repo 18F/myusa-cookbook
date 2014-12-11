@@ -32,6 +32,7 @@ template "/etc/init/myusa.conf" do
     sms_number: node['myusa'['sms_number'],
     smtp_host: node['myusa']['smtp_host'],
     smtp_port: node['myusa']['smtp_port'],
+    sender_email: node['myusa']['sender_email']
     elasticache_endpoint: node['myusa']['elasticache']['endpoint'],
     working_dir: "#{deploy_to_dir}/current",
     app_user: node['myusa']['user']['username'],
