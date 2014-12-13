@@ -10,8 +10,14 @@ script
 su <%= @app_user %> -c "/bin/bash <<EOT
 export RAILS_ENV=<%= @rails_env %>
 export PATH=/opt/rbenv/shims:/opt/rbenv/bin:\"$PATH\"
+export SMTP_HOST=<%= @smtp_host %>
+export SMTP_PORT=<%= @smtp_port %>
+export SENDER_EMAIL=<%= @sender_email %>
+export APP_HOST=<%= @app_host %>
+export SMS_NUMBER=<%= @sms_number %>
+export ELASTICACHE_ENDPOINT=<%= @elasticache_endpoint %>
 
-/var/www/myusa/current/bin/unicorn -c /var/www/myusa/current/config/unicorn.rb -E staging >> /var/www/myusa/current/log/unicorn.sys.log 2>&1
+<%= @working_dir %>/bin/unicorn -c <%= @working_dir %>/config/unicorn.rb -E staging >> <%= @working_dir %>/log/unicorn.sys.log 2>&1
 
 EOT"
 end script
