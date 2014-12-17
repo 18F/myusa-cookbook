@@ -6,18 +6,16 @@ stop on shutdown
 respawn
 respawn limit 10 5
 
-script
-su <%= @app_user %> -c "/bin/bash <<EOT
-export RAILS_ENV=<%= @rails_env %>
-export PATH=/opt/rbenv/shims:/opt/rbenv/bin:\"$PATH\"
-export SMTP_HOST=<%= @smtp_host %>
-export SMTP_PORT=<%= @smtp_port %>
-export SENDER_EMAIL=<%= @sender_email %>
-export APP_HOST=<%= @app_host %>
-export SMS_NUMBER=<%= @sms_number %>
-export ELASTICACHE_ENDPOINT=<%= @elasticache_endpoint %>
+setuid <%= @app_user %>
 
-<%= @working_dir %>/bin/unicorn -c <%= @working_dir %>/config/unicorn.rb -E staging >> <%= @working_dir %>/log/unicorn.sys.log 2>&1
+env RAILS_ENV="<%= @rails_env %>"
+env PATH="/opt/rbenv/shims:/opt/rbenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+env SMTP_HOST="<%= @smtp_host %>"
+env SMTP_PORT="<%= @smtp_port %>"
+env SENDER_EMAIL="<%= @sender_email %>"
+env APP_HOST="<%= @app_host %>"
+env SMS_NUMBER="<%= @sms_number %>"
+env ELASTICACHE_ENDPOINT="<%= @elasticache_endpoint %>"
 
-EOT"
-end script
+exec \
+<%= @working_dir %>/bin/unicorn -c <%= @working_dir %>/config/unicorn.rb >> <%= @working_dir %>/log/unicorn.sys.log 2>&1
