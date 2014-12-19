@@ -148,6 +148,6 @@ shipper_config "myusa" do
     "/opt/rbenv/shims/bundle exec rake assets:precompile RAILS_ENV=#{node['myusa']['rails_env']}"
   ]
   after_symlink [
-    "touch tmp/restart.txt"
+    "kill -HUP `status myusa | egrep -oi '([0-9]+)$'`"
   ]
 end
