@@ -1,5 +1,5 @@
 if node['ec2']
-  prefix = 'myusa/' + node['myusa']['rails_env']
+  prefix = 'myusa/' + node['environment']
   node.set['myusa']['secrets']['db_encrypt_key'] = citadel["#{prefix}/db_encrypt_key"]
   node.set['myusa']['secrets']['devise_secret_key'] = citadel["#{prefix}/devise_secret_key"]
   node.set['myusa']['secrets']['aws_ses_username'] = citadel["#{prefix}/smtp_user"]

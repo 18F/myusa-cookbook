@@ -1,3 +1,4 @@
+default['environment'] = 'production'
 default['myusa']['rails_env'] = 'production'
 default['myusa']['ruby_version'] = '2.1.3'
 default['myusa']['repo'] = 'https://github.com/18F/myusa.git'
