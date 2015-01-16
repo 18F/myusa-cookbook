@@ -18,4 +18,4 @@ depends 'nginx_conf'
 depends 'user'
 
 depends 'citadel'
-depends 'shipper', '~> 0.1.0'
+depends 'shipper', '~> 0.2.0'
