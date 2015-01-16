@@ -73,7 +73,7 @@ end
 template "#{deploy_to_dir}/shared/config/#{node['myusa']['rails_env']}.rb" do
   source "environment.rb.erb"
   variables(
-    app_url: node['myusa']['app_host'],
+    app_host: node['myusa']['app_host'],
     elasticache_endpoint: node['myusa']['elasticache']['endpoint']
   )
 end
