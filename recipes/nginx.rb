@@ -28,10 +28,15 @@ end
 template "/etc/init/myusa.conf" do
   source "myusa.upstart.erb"
   variables(
-    working_dir: "#{deploy_to_dir}/current",
-    app_id: app_id,
-    app_user: node['myusa']['user']['username'],
-    rails_env: node['myusa']['rails_env']
+  working_dir: "#{deploy_to_dir}/current",
+    app_host:             node['myusa']['app_host'],
+    sms_number:           node['myusa']['sms_number'],
+    smtp_host:            node['myusa']['smtp_host'],
+    smtp_port:            node['myusa']['smtp_port'],
+    sender_email:         node['myusa']['sender_email'],
+    elasticache_endpoint: node['myusa']['elasticache']['endpoint'],
+    app_user:             node['myusa']['user']['username'],
+    rails_env:            node['myusa']['rails_env']
   )
   owner  "root"
   group  "root"

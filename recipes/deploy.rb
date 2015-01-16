@@ -67,10 +67,13 @@ template "#{deploy_to_dir}/shared/config/database.yml" do
 end
 
 # set up environment.rb file
+#
+# TODO: Kill this block and environment.rb.erb once the
+#       myusa "environment-config" branch merges to master
 template "#{deploy_to_dir}/shared/config/#{node['myusa']['rails_env']}.rb" do
   source "environment.rb.erb"
   variables(
-    app_url: node['myusa']['app_url'],
+    app_host: node['myusa']['app_host'],
     elasticache_endpoint: node['myusa']['elasticache']['endpoint']
   )
 end
@@ -145,6 +148,6 @@ shipper_config "myusa" do
     "/opt/rbenv/shims/bundle exec rake assets:precompile RAILS_ENV=#{node['myusa']['rails_env']}"
   ]
   after_symlink [
-    "touch tmp/restart.txt"
+    "kill -HUP `status myusa | egrep -oi '([0-9]+)$'`"
   ]
 end
