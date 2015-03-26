@@ -4,6 +4,7 @@ default['myusa']['repo'] = 'https://github.com/18F/myusa.git'
 default['myusa']['app_host'] = 'myusa.18f.us'
 default['myusa']['sms_number'] = '+12407433320'
 default['myusa']['sender_email'] = 'MyUSA <myusa@gsa.gov>'
+default['myusa']['branch'] = 'devel'
 
 default['myusa']['user']['username'] = 'myusa'
 default['myusa']['user']['group'] = 'myusa'

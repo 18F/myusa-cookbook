@@ -21,7 +21,7 @@ shared_files = {
 
 deploy_branch deploy_to_dir do
   repo node['myusa']['repo']
-  revision "devel" # or "HEAD" or "TAG_for_1.0" or (subversion) "1234"
+  revision node['myusa']['branch'] # or "HEAD" or "TAG_for_1.0" or (subversion) "1234"
   user node['myusa']['user']['username']
   migrate false
   # migration_command "rake db:migrate"
