@@ -26,7 +26,7 @@ deploy_branch deploy_to_dir do
   migrate false
   # migration_command "rake db:migrate"
   environment "RAILS_ENV" => node['myusa']['rails_env'], "SECRET_TOKEN" => node['myusa']['secrets']['secret_key_base']
-  shallow_clone true
+  shallow_clone false
   keep_releases 3
   action :deploy # or :rollback
   purge_before_symlink shared_dirs.values + shared_files.values
