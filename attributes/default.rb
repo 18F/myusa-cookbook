@@ -19,7 +19,7 @@ default['myusa']['database']['password'] = 'secret!'
 default['mysql']['database']['root_password'] = ''
 
 default['myusa']['elasticache']['endpoint'] = ''
-default['myusa']['smtp_host'] = 'email-smtp.us-east-1.amazonaws.com'
+default['myusa']['smtp_host'] = 'smtp.mandrillapp.com'
 default['myusa']['smtp_port'] = '587'
 
 # Sample certificate
