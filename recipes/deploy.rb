@@ -16,7 +16,6 @@ shared_files = {
   "config/memcached.yml" => "config/memcached.yml",
   "config/newrelic.yml" => "config/newrelic.yml",
   "config/secrets.yml" => "config/secrets.yml",
-  "config/#{node['myusa']['rails_env']}.rb" => "config/environments/#{node['myusa']['rails_env']}.rb"
 }
 
 deploy_branch deploy_to_dir do
