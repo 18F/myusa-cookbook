@@ -13,9 +13,9 @@ shared_dirs = {
 
 shared_files = {
   "config/database.yml" => "config/database.yml",
-  "config/memcached.yml" => "config/memcached.yml",
   "config/newrelic.yml" => "config/newrelic.yml",
-  "config/secrets.yml" => "config/secrets.yml",
+  "config/secrets.yml"  => "config/secrets.yml",
+  "config/env.sh"       => "config/env.sh"
 }
 
 deploy_branch deploy_to_dir do
@@ -49,6 +49,24 @@ end
 directory "#{deploy_to_dir}/shared/config" do
   owner  node['myusa']['user']['username']
   recursive true
+end
+
+
+# Add upstart script
+template "#{deploy_to_dir}/shared/config/env.sh" do
+  source "env.sh.erb"
+  variables(
+    app_host:             node['myusa']['app_host'],
+    sms_number:           node['myusa']['sms_number'],
+    smtp_host:            node['myusa']['smtp_host'],
+    smtp_port:            node['myusa']['smtp_port'],
+    sender_email:         node['myusa']['sender_email'],
+    elasticache_endpoint: node['myusa']['elasticache']['endpoint'],
+    rails_env:            node['myusa']['rails_env']
+  )
+  owner  "root"
+  group  "root"
+  mode   "0644"
 end
 
 # set up templates for application secrets
@@ -108,7 +126,7 @@ end
 
 rbenv_execute "migrate db" do
   ruby_version node['myusa']['ruby_version']
-  command "bundle exec rake db:migrate"
+  command "source config/env.sh && bundle exec rake db:migrate"
   cwd deploy_to_dir + "/current"
   environment "RAILS_ENV" => node['myusa']['rails_env']
   user node['myusa']['user']['username']
@@ -116,7 +134,7 @@ end
 
 rbenv_execute "build assets" do
   ruby_version node['myusa']['ruby_version']
-  command "bundle exec rake assets:precompile"
+  command "source config/env.sh && bundle exec rake assets:precompile"
   cwd deploy_to_dir + "/current"
   environment "RAILS_ENV" => node['myusa']['rails_env']
   user node['myusa']['user']['username']
@@ -131,8 +149,8 @@ shipper_config "myusa" do
   shared_files shared_files.merge(shared_dirs)
   before_symlink [
     "/opt/rbenv/shims/bundle --path=./.bundle --binstubs --deployment --without development test deploy RAILS_ENV=#{node['myusa']['rails_env']}",
-    "/opt/rbenv/shims/bundle exec rake db:migrate RAILS_ENV=#{node['myusa']['rails_env']}",
-    "/opt/rbenv/shims/bundle exec rake assets:precompile RAILS_ENV=#{node['myusa']['rails_env']}"
+    "source config/env.sh && /opt/rbenv/shims/bundle exec rake db:migrate RAILS_ENV=#{node['myusa']['rails_env']}",
+    "source config/env.sh && /opt/rbenv/shims/bundle exec rake assets:precompile RAILS_ENV=#{node['myusa']['rails_env']}"
   ]
   after_symlink [
     "kill -HUP `status myusa | egrep -oi '([0-9]+)$'`"

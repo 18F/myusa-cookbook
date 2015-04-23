@@ -8,14 +8,5 @@ respawn limit 10 5
 
 setuid <%= @app_user %>
 
-env RAILS_ENV="<%= @rails_env %>"
-env PATH="/opt/rbenv/shims:/opt/rbenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-env SMTP_HOST="<%= @smtp_host %>"
-env SMTP_PORT="<%= @smtp_port %>"
-env SENDER_EMAIL="<%= @sender_email %>"
-env APP_HOST="<%= @app_host %>"
-env SMS_NUMBER="<%= @sms_number %>"
-env ELASTICACHE_ENDPOINT="<%= @elasticache_endpoint %>"
-
-exec \
+exec source <%= @working_dir %>/config/env.sh && \
 <%= @working_dir %>/bin/unicorn -c <%= @working_dir %>/config/unicorn.rb >> <%= @working_dir %>/log/unicorn.sys.log 2>&1
