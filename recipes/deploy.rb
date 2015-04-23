@@ -126,7 +126,7 @@ end
 
 rbenv_execute "migrate db" do
   ruby_version node['myusa']['ruby_version']
-  command "source config/env.sh && bundle exec rake db:migrate"
+  command ". config/env.sh && bundle exec rake db:migrate"
   cwd deploy_to_dir + "/current"
   environment "RAILS_ENV" => node['myusa']['rails_env']
   user node['myusa']['user']['username']
@@ -134,7 +134,7 @@ end
 
 rbenv_execute "build assets" do
   ruby_version node['myusa']['ruby_version']
-  command "source config/env.sh && bundle exec rake assets:precompile"
+  command ". config/env.sh && bundle exec rake assets:precompile"
   cwd deploy_to_dir + "/current"
   environment "RAILS_ENV" => node['myusa']['rails_env']
   user node['myusa']['user']['username']
@@ -149,8 +149,8 @@ shipper_config "myusa" do
   shared_files shared_files.merge(shared_dirs)
   before_symlink [
     "/opt/rbenv/shims/bundle --path=./.bundle --binstubs --deployment --without development test deploy RAILS_ENV=#{node['myusa']['rails_env']}",
-    "source config/env.sh && /opt/rbenv/shims/bundle exec rake db:migrate RAILS_ENV=#{node['myusa']['rails_env']}",
-    "source config/env.sh && /opt/rbenv/shims/bundle exec rake assets:precompile RAILS_ENV=#{node['myusa']['rails_env']}"
+    ". config/env.sh && /opt/rbenv/shims/bundle exec rake db:migrate RAILS_ENV=#{node['myusa']['rails_env']}",
+    ". config/env.sh && /opt/rbenv/shims/bundle exec rake assets:precompile RAILS_ENV=#{node['myusa']['rails_env']}"
   ]
   after_symlink [
     "kill -HUP `status myusa | egrep -oi '([0-9]+)$'`"
