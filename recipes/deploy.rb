@@ -15,7 +15,6 @@ shared_files = {
   "config/database.yml" => "config/database.yml",
   "config/newrelic.yml" => "config/newrelic.yml",
   "config/secrets.yml"  => "config/secrets.yml",
-  "config/env.sh"       => "config/env.sh"
 }
 
 deploy_branch deploy_to_dir do
@@ -53,8 +52,8 @@ end
 
 
 # Add upstart script
-template "#{deploy_to_dir}/shared/config/env.sh" do
-  source "env.sh.erb"
+template "/etc/environment" do
+  source "environment.erb"
   variables(
     app_host:             node['myusa']['app_host'],
     sms_number:           node['myusa']['sms_number'],
@@ -126,7 +125,7 @@ end
 
 rbenv_execute "migrate db" do
   ruby_version node['myusa']['ruby_version']
-  command ". config/env.sh && bundle exec rake db:migrate"
+  command "bundle exec rake db:migrate"
   cwd deploy_to_dir + "/current"
   environment "RAILS_ENV" => node['myusa']['rails_env']
   user node['myusa']['user']['username']
@@ -134,7 +133,7 @@ end
 
 rbenv_execute "build assets" do
   ruby_version node['myusa']['ruby_version']
-  command ". config/env.sh && bundle exec rake assets:precompile"
+  command "bundle exec rake assets:precompile"
   cwd deploy_to_dir + "/current"
   environment "RAILS_ENV" => node['myusa']['rails_env']
   user node['myusa']['user']['username']
@@ -149,8 +148,8 @@ shipper_config "myusa" do
   shared_files shared_files.merge(shared_dirs)
   before_symlink [
     "/opt/rbenv/shims/bundle --path=./.bundle --binstubs --deployment --without development test deploy RAILS_ENV=#{node['myusa']['rails_env']}",
-    ". config/env.sh && /opt/rbenv/shims/bundle exec rake db:migrate RAILS_ENV=#{node['myusa']['rails_env']}",
-    ". config/env.sh && /opt/rbenv/shims/bundle exec rake assets:precompile RAILS_ENV=#{node['myusa']['rails_env']}"
+    "/opt/rbenv/shims/bundle exec rake db:migrate RAILS_ENV=#{node['myusa']['rails_env']}",
+    "/opt/rbenv/shims/bundle exec rake assets:precompile RAILS_ENV=#{node['myusa']['rails_env']}"
   ]
   after_symlink [
     "kill -HUP `status myusa | egrep -oi '([0-9]+)$'`"

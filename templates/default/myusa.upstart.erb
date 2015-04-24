@@ -8,5 +8,5 @@ respawn limit 10 5
 
 setuid <%= @app_user %>
 
-exec . <%= @working_dir %>/config/env.sh && \
+exec \
 <%= @working_dir %>/bin/unicorn -c <%= @working_dir %>/config/unicorn.rb >> <%= @working_dir %>/log/unicorn.sys.log 2>&1
