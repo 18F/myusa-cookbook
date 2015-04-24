@@ -17,6 +17,18 @@ shared_files = {
   "config/secrets.yml"  => "config/secrets.yml",
 }
 
+def get_env_hash
+  {
+    APP_HOST:             node['myusa']['app_host'],
+    SMS_NUMBER:           node['myusa']['sms_number'],
+    SMTP_HOST:            node['myusa']['smtp_host'],
+    SMTP_PORT:            node['myusa']['smtp_port'],
+    SENDER_EMAIL:         node['myusa']['sender_email'],
+    ELASTICACHE_ENDPOINT: node['myusa']['elasticache']['endpoint'],
+    RAILS_ENV:            node['myusa']['rails_env']
+  }
+end
+
 deploy_branch deploy_to_dir do
   repo node['myusa']['repo']
   revision node['myusa']['branch'] # or "HEAD" or "TAG_for_1.0" or (subversion) "1234"
@@ -127,7 +139,7 @@ rbenv_execute "migrate db" do
   ruby_version node['myusa']['ruby_version']
   command "bundle exec rake db:migrate"
   cwd deploy_to_dir + "/current"
-  environment "RAILS_ENV" => node['myusa']['rails_env']
+  environment get_env_hash
   user node['myusa']['user']['username']
 end
 
@@ -135,7 +147,7 @@ rbenv_execute "build assets" do
   ruby_version node['myusa']['ruby_version']
   command "bundle exec rake assets:precompile"
   cwd deploy_to_dir + "/current"
-  environment "RAILS_ENV" => node['myusa']['rails_env']
+  environment get_env_hash
   user node['myusa']['user']['username']
 end
 
