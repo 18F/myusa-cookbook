@@ -1,3 +1,8 @@
+
+# This repository is deprecated
+
+MyUSA's deployment is now based on Cloud Foundry and no longer uses Chef.
+
 Description
 ===========
 
